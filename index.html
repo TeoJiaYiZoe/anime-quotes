@@ -142,7 +142,10 @@
             try {
                 const response = await fetch(`${baseUrl}/random-quote`);
                 const data = await response.json();
-                document.getElementById("random-quote").innerText = data.quote || "No quote available";
+                const randomQuote = data.quote || "No quote available";
+                const anime = data.anime || "No anime available"; 
+
+                document.getElementById("random-quote").innerHTML = `"${randomQuote}"<br><strong>Anime:</strong> ${anime}`;
             } catch (error) {
                 console.error('Error fetching random quote:', error);
                 document.getElementById("random-quote").innerText = "Error fetching quote";
@@ -191,13 +194,13 @@
                 } else {
                     data.forEach(quote => {
                         const li = document.createElement("li");
-                        li.textContent = `"${quote.quote}" - ${quote.character}`;
+                        li.textContent = `"${quote.quote}" - ${quote.anime}`;
                         quotesList.appendChild(li);
                     });
                 }
             } else if (data.quote) { // If it's a single object
                 const li = document.createElement("li");
-                li.textContent = `"${data.quote}" - ${data.character}`;
+                li.textContent = `"${data.quote}" - ${data.anime}`;
                 quotesList.appendChild(li);
             } else {
                 quotesList.innerHTML = `<li>${data.error || "Unexpected response format"}</li>`;
@@ -267,13 +270,13 @@
                 } else {
                     data.forEach(quote => {
                         const li = document.createElement("li");
-                        li.textContent = `"${quote.quote}" - ${quote.character}`;
+                        li.textContent = `"${quote.quote}" - ${quote.anime}`;
                         resultsList.appendChild(li);
                     });
                 }
             } else if (data.quote) { // If it's a single object
                 const li = document.createElement("li");
-                li.textContent = `"${data.quote}" - ${data.character}`;
+                li.textContent = `"${data.quote}" - ${data.anime}`;
                 resultsList.appendChild(li);
             } else {
                 resultsList.innerHTML = `<li>${data.error || "Unexpected response format"}</li>`;
