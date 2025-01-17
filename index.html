@@ -145,7 +145,7 @@
                 const randomQuote = data.quote || "No quote available";
                 const anime = data.anime || "No anime available"; 
 
-                document.getElementById("random-quote").innerHTML = `"${randomQuote}"<br><strong>Anime:</strong> ${anime}`;
+                document.getElementById("random-quote").innerHTML = `"${randomQuote}"<br>- ${anime}`;
             } catch (error) {
                 console.error('Error fetching random quote:', error);
                 document.getElementById("random-quote").innerText = "Error fetching quote";
