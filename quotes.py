@@ -41,4 +41,10 @@ quotes = [
         "anime": "Jujutsu Kaisen",
         "tags": ["Satoru Gojo", "Jujutsu Kaisen"]
     },
+    {
+        "id": 8,
+        "quote": "No matter how many weapons you have, no matter how great your technology might be, the world cannot live without love.",
+        "anime": "Castle In The Sky",
+        "tags": ["Castle In The Sky", "Sheeta"]
+    },
 ]
