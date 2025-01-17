@@ -137,17 +137,44 @@
             }
         }
 
+        // Get Available Anime
+        async function getAvailableAnime() {
+            try {
+                const response = await fetch(`${baseUrl}/available-anime`);
+                const data = await response.json();
+                document.getElementById("available-anime").innerText = data.quote || "No available anime available";
+            } catch (error) {
+                console.error('Error fetching available anime:', error);
+                document.getElementById("available-anime").innerText = "Error fetching available anime";
+            }
+        }
+
+        // Get Available Tags
+        async function getAvailableTags() {
+            try {
+                const response = await fetch(`${baseUrl}/available-tags`);
+                const data = await response.json();
+                document.getElementById("available-tags").innerText = data.quote || "No available tags available";
+            } catch (error) {
+                console.error('Error fetching available tags:', error);
+                document.getElementById("available-tags").innerText = "Error fetching available tags";
+            }
+        }
+
         // Get Quotes by Anime
         document.getElementById("anime-form").addEventListener("submit", async function (event) {
-            event.preventDefault();
-            const anime = document.getElementById("anime").value;
-            try {
-                const response = await fetch(`${baseUrl}/quotes-by-anime?anime=${anime}`);
-                const data = await response.json();
-                const quotesList = document.getElementById("quotes-by-anime");
-                quotesList.innerHTML = '';
-                if (data.error) {
-                    quotesList.innerHTML = `<li>${data.error}</li>`;
+        event.preventDefault();
+        const anime = document.getElementById("anime").value;
+        try {
+            const response = await fetch(`${baseUrl}/quotes-by-anime?anime=${anime}`);
+            const data = await response.json();
+            const quotesList = document.getElementById("quotes-by-anime");
+            quotesList.innerHTML = ''; // Clear previous results
+
+            // Handle response if it's a single object or an array
+            if (Array.isArray(data)) {
+                if (data.length === 0) {
+                    quotesList.innerHTML = "<li>No quotes found for this anime.</li>";
                 } else {
                     data.forEach(quote => {
                         const li = document.createElement("li");
@@ -155,10 +182,19 @@
                         quotesList.appendChild(li);
                     });
                 }
-            } catch (error) {
-                console.error('Error fetching quotes by anime:', error);
+            } else if (data.quote) { // If it's a single object
+                const li = document.createElement("li");
+                li.textContent = `"${data.quote}" - ${data.character}`;
+                quotesList.appendChild(li);
+            } else {
+                quotesList.innerHTML = `<li>${data.error || "Unexpected response format"}</li>`;
             }
-        });
+        } catch (error) {
+            console.error('Error fetching quotes by anime:', error);
+            document.getElementById("quotes-by-anime").innerHTML = `<li>Error fetching quotes</li>`;
+        }
+    });
+
 
         // Get Quotes by Tag
         document.getElementById("tag-form").addEventListener("submit", async function (event) {
@@ -198,20 +234,23 @@
 
         // Search Quotes
         document.getElementById("search-form").addEventListener("submit", async function (event) {
-            event.preventDefault();
-            const anime = document.getElementById("search-anime").value;
-            const tag = document.getElementById("search-tag").value;
-            try {
-                const url = new URL(`${baseUrl}/search-quotes`);
-                if (anime) url.searchParams.append("anime", anime);
-                if (tag) url.searchParams.append("tag", tag);
+        event.preventDefault();
+        const anime = document.getElementById("search-anime").value;
+        const tag = document.getElementById("search-tag").value;
+        try {
+            const url = new URL(`${baseUrl}/search-quotes`);
+            if (anime) url.searchParams.append("anime", anime);
+            if (tag) url.searchParams.append("tag", tag);
 
-                const response = await fetch(url);
-                const data = await response.json();
-                const resultsList = document.getElementById("search-results");
-                resultsList.innerHTML = '';
-                if (data.error) {
-                    resultsList.innerHTML = `<li>${data.error}</li>`;
+            const response = await fetch(url);
+            const data = await response.json();
+            const resultsList = document.getElementById("search-results");
+            resultsList.innerHTML = ''; // Clear previous results
+
+            // Handle response if it's a single object or an array
+            if (Array.isArray(data)) {
+                if (data.length === 0) {
+                    resultsList.innerHTML = "<li>No quotes found for the given search.</li>";
                 } else {
                     data.forEach(quote => {
                         const li = document.createElement("li");
@@ -219,10 +258,19 @@
                         resultsList.appendChild(li);
                     });
                 }
-            } catch (error) {
-                console.error('Error searching quotes:', error);
+            } else if (data.quote) { // If it's a single object
+                const li = document.createElement("li");
+                li.textContent = `"${data.quote}" - ${data.character}`;
+                resultsList.appendChild(li);
+            } else {
+                resultsList.innerHTML = `<li>${data.error || "Unexpected response format"}</li>`;
             }
-        });
+        } catch (error) {
+            console.error('Error searching quotes:', error);
+            document.getElementById("search-results").innerHTML = `<li>Error searching quotes</li>`;
+        }
+    });
+
     </script>
 </body>
 </html>
