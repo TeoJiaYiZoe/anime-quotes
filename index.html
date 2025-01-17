@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Quotes API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #444;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        section {
+            margin: 20px;
+        }
+
+        button, input[type="submit"], form {
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            background-color: #f4f4f4;
+            cursor: pointer;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 100%;
+            max-width: 300px;
+            margin-top: 5px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        p {
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            body {
+                font-size: 14px;
+            }
+
+            section {
+                margin: 10px;
+            }
+
+            input[type="text"], button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Anime Quotes API</h1>
+    </header>
+
+    <section>
+        <p>The Anime Quotes API provides access to a vast collection of inspirational anime quotes, perfect for fans looking to relive those powerful moments. Use this API to fetch random quotes, search for quotes by specific anime or tag, and share the wisdom from beloved anime characters with the world. </p>
+        <p><strong>Responsible Use Guidelines:</strong> This API is provided for educational and personal use only. Please avoid excessive requests to the API, and use the data respectfully. Do not use the API to scrape or redistribute its content in a way that violates the terms of service. Always provide appropriate credit to the creators and sources of the quotes.</p>
+    </section>
+
+    <section>
+        <h2>Get Random Quote</h2>
+        <button onclick="getRandomQuote()">Get Random Quote</button>
+        <p id="random-quote"></p>
+    </section>
+
+    <section>
+        <h2>Get Quotes by Anime</h2>
+        <form id="anime-form">
+            <label for="anime">Anime Name:</label>
+            <input type="text" id="anime" name="anime" required>
+            <button type="submit">Search</button>
+        </form>
+        <ul id="quotes-by-anime"></ul>
+    </section>
+
+    <section>
+        <h2>Get Quotes by Tag</h2>
+        <form id="tag-form">
+            <label for="tag">Tag:</label>
+            <input type="text" id="tag" name="tag" required>
+            <button type="submit">Search</button>
+        </form>
+        <ul id="quotes-by-tag"></ul>
+    </section>
+
+    <section>
+        <h2>Search Quotes</h2>
+        <form id="search-form">
+            <label for="search-anime">Anime Name (optional):</label>
+            <input type="text" id="search-anime" name="anime">
+            <label for="search-tag">Tag (optional):</label>
+            <input type="text" id="search-tag" name="tag">
+            <button type="submit">Search</button>
+        </form>
+        <ul id="search-results"></ul>
+    </section>
+
+    <script>
+        const baseUrl = "https://dqw1z1be3e.execute-api.ap-southeast-1.amazonaws.com/prod"; // Replace with your actual endpoint
+
+        // Get Random Quote
+        async function getRandomQuote() {
+            try {
+                const response = await fetch(`${baseUrl}/random-quote`);
+                const data = await response.json();
+                document.getElementById("random-quote").innerText = data.quote || "No quote available";
+            } catch (error) {
+                console.error('Error fetching random quote:', error);
+                document.getElementById("random-quote").innerText = "Error fetching quote";
+            }
+        }
+
+        // Get Quotes by Anime
+        document.getElementById("anime-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const anime = document.getElementById("anime").value;
+            try {
+                const response = await fetch(`${baseUrl}/quotes-by-anime?anime=${anime}`);
+                const data = await response.json();
+                const quotesList = document.getElementById("quotes-by-anime");
+                quotesList.innerHTML = '';
+                if (data.error) {
+                    quotesList.innerHTML = `<li>${data.error}</li>`;
+                } else {
+                    data.forEach(quote => {
+                        const li = document.createElement("li");
+                        li.textContent = `"${quote.quote}" - ${quote.character}`;
+                        quotesList.appendChild(li);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching quotes by anime:', error);
+            }
+        });
+
+        // Get Quotes by Tag
+        document.getElementById("tag-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const tag = document.getElementById("tag").value;
+            try {
+                const response = await fetch(`${baseUrl}/quotes-by-tag?tag=${tag}`);
+                const data = await response.json();
+                const quotesList = document.getElementById("quotes-by-tag");
+                quotesList.innerHTML = '';
+                if (data.error) {
+                    quotesList.innerHTML = `<li>${data.error}</li>`;
+                } else {
+                    data.forEach(quote => {
+                        const li = document.createElement("li");
+                        li.textContent = `"${quote.quote}" - ${quote.character}`;
+                        quotesList.appendChild(li);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching quotes by tag:', error);
+            }
+        });
+
+        // Search Quotes
+        document.getElementById("search-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const anime = document.getElementById("search-anime").value;
+            const tag = document.getElementById("search-tag").value;
+            try {
+                const url = new URL(`${baseUrl}/search-quotes`);
+                if (anime) url.searchParams.append("anime", anime);
+                if (tag) url.searchParams.append("tag", tag);
+
+                const response = await fetch(url);
+                const data = await response.json();
+                const resultsList = document.getElementById("search-results");
+                resultsList.innerHTML = '';
+                if (data.error) {
+                    resultsList.innerHTML = `<li>${data.error}</li>`;
+                } else {
+                    data.forEach(quote => {
+                        const li = document.createElement("li");
+                        li.textContent = `"${quote.quote}" - ${quote.character}`;
+                        resultsList.appendChild(li);
+                    });
+                }
+            } catch (error) {
+                console.error('Error searching quotes:', error);
+            }
+        });
+    </script>
+</body>
+</html>
