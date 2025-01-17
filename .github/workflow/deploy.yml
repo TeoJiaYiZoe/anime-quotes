@@ -1,0 +1,44 @@
+name: Deploy to AWS Lambda
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment when pushing to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          mkdir -p package  # Create a package directory
+          pip install --target=package -r requirements.txt  # Install dependencies into the package directory
+
+      - name: Copy Lambda function code
+        shell: bash 
+        run: |
+          shopt -s extglob  # Enable extended globbing
+          cp -r !(package) package/  # Copy everything excluding the 'package' directory
+
+      - name: Zip Lambda function
+        run: |
+          cd package
+          zip -r ../function.zip .  # Zip the contents of the 'package' directory
+
+      - name: Deploy to AWS Lambda
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'ap-southeast-1'
+        run: |
+          aws lambda update-function-code --function-name random_quote_api --zip-file fileb://function.zip
