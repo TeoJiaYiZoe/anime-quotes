@@ -162,26 +162,39 @@
 
         // Get Quotes by Tag
         document.getElementById("tag-form").addEventListener("submit", async function (event) {
-            event.preventDefault();
-            const tag = document.getElementById("tag").value;
-            try {
-                const response = await fetch(`${baseUrl}/quotes-by-tag?tag=${tag}`);
-                const data = await response.json();
-                const quotesList = document.getElementById("quotes-by-tag");
-                quotesList.innerHTML = '';
-                if (data.error) {
-                    quotesList.innerHTML = `<li>${data.error}</li>`;
+        event.preventDefault();
+        const tag = document.getElementById("tag").value;
+        try {
+            const response = await fetch(`${baseUrl}/quotes-by-tag?tag=${tag}`);
+            const data = await response.json();
+            const quotesList = document.getElementById("quotes-by-tag");
+            quotesList.innerHTML = ''; // Clear previous results
+
+            // Handle response if it's a single object or an array
+            if (Array.isArray(data)) {
+                if (data.length === 0) {
+                    quotesList.innerHTML = "<li>No quotes found for this tag.</li>";
                 } else {
                     data.forEach(quote => {
                         const li = document.createElement("li");
-                        li.textContent = `"${quote.quote}" - ${quote.character}`;
+                        li.textContent = `"${quote.quote}" - ${quote.anime} (${quote.tags.join(", ")})`;
                         quotesList.appendChild(li);
                     });
                 }
-            } catch (error) {
-                console.error('Error fetching quotes by tag:', error);
+            } else if (data.quote) { // If it's a single object
+                const li = document.createElement("li");
+                li.textContent = `"${data.quote}" - ${data.anime} (${data.tags.join(", ")})`;
+                quotesList.appendChild(li);
+            } else {
+                quotesList.innerHTML = `<li>${data.error || "Unexpected response format"}</li>`;
             }
-        });
+        } catch (error) {
+            console.error('Error fetching quotes by tag:', error);
+            document.getElementById("quotes-by-tag").innerHTML = `<li>Error fetching quotes</li>`;
+        }
+    });
+
+
 
         // Search Quotes
         document.getElementById("search-form").addEventListener("submit", async function (event) {
