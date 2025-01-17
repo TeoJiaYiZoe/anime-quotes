@@ -91,15 +91,15 @@
     </section>
 
     <section>
-        <h2>Get Available Animes</h2>
-        <button onclick="getAvailableAnime()">Get Random Quote</button>
-        <p id="available-anime"></p>
+        <h2>Fetch Available Animes</h2>
+        <button onclick="getAvailableAnime()">Fetch Available Animes</button>
+        <p id="available-anime">No available anime available</p>
     </section>
 
     <section>
         <h2>Get Available Tags</h2>
-        <button onclick="getAvailableTags()">Get Random Quote</button>
-        <p id="available-tags"></p>
+        <button onclick="getAvailableTags()">Get Available Tags</button>
+        <p id="available-tags">No available tags available</p>
     </section>
 
     <section>
@@ -154,7 +154,7 @@
             try {
                 const response = await fetch(`${baseUrl}/available-anime`);
                 const data = await response.json();
-                document.getElementById("available-anime").innerText = data.quote || "No available anime available";
+                document.getElementById("available-anime").innerText = data.animes.join(', ') || "No available anime available";
             } catch (error) {
                 console.error('Error fetching available anime:', error);
                 document.getElementById("available-anime").innerText = "Error fetching available anime";
@@ -166,12 +166,13 @@
             try {
                 const response = await fetch(`${baseUrl}/available-tags`);
                 const data = await response.json();
-                document.getElementById("available-tags").innerText = data.quote || "No available tags available";
+                document.getElementById("available-tags").innerText = data.tags.join(', ') || "No available tags available";
             } catch (error) {
                 console.error('Error fetching available tags:', error);
                 document.getElementById("available-tags").innerText = "Error fetching available tags";
             }
         }
+        
 
         // Get Quotes by Anime
         document.getElementById("anime-form").addEventListener("submit", async function (event) {
