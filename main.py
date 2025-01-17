@@ -43,7 +43,7 @@ def get_available_animes():
     return {"animes": sorted(animes)}
 
 
-@app.get("/quotes-by-tag/{tag}", status_code=status.HTTP_200_OK)
+@app.get("/quotes-by-tag", status_code=status.HTTP_200_OK)
 def get_quotes_by_tag(tag: str):
     """Return all quotes with a specific tag."""
     tag_normalized = normalize_string(tag)
