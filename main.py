@@ -19,7 +19,7 @@ def get_random_quote():
     return random.choice(quotes)
 
 
-@app.get("/quotes-by-anime/{anime}", status_code=status.HTTP_200_OK)
+@app.get("/quotes-by-anime", status_code=status.HTTP_200_OK)
 def get_quotes_by_anime(anime: str):
     """Return all quotes from a specific anime."""
     anime_normalized = normalize_string(anime)
@@ -67,7 +67,7 @@ def get_available_tags():
     return {"tags": sorted(tags)}
 
 
-@app.get("/search-quotes/{anime}/{tag}", status_code=status.HTTP_200_OK)
+@app.get("/search-quotes", status_code=status.HTTP_200_OK)
 def search_quotes(
     anime: Optional[str] = None,
     tag: Optional[str] = None,
