@@ -55,5 +55,7 @@ To run this project locally, follow the instructions below.
    pip install -r requirements.txt
 
 3. **Start the Local Server**
+
+   ```bash
    uvicorn main:app --reload
 
