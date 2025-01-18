@@ -321,6 +321,7 @@
                 console.log(response)
                 const data = await response.json();
                 const quotesList = document.getElementById("quotes-by-tag");
+                quotesList.innerHTML = ''; // Clear previous results
 
                 if (Array.isArray(data) && data.length > 0) {
                     data.forEach(quote => {
@@ -350,8 +351,8 @@
 
             const response = await fetch(url);
             const data = await response.json();
-            const resultsList = document.getElementById("search-results");
-
+            const quotesList = document.getElementById("search-results");
+            quotesList.innerHTML = '';
             if (Array.isArray(data) && data.length > 0) {
                 data.forEach(quote => {
                     const listItem = document.createElement('li');
@@ -363,7 +364,7 @@
             }
         } catch (error) {
             console.error('Error searching quotes:', error);
-            document.getElementById("quotes-by-tag").innerHTML = "Error searching quotes. Please try again later.";
+            document.getElementById("search-results").innerHTML = "Error searching quotes. Please try again later.";
         }
     });
 
