@@ -299,26 +299,18 @@
             quotesList.innerHTML = ''; // Clear previous results
 
             // Handle response if it's a single object or an array
-            if (Array.isArray(data)) {
-                if (data.length === 0) {
-                    quotesList.innerHTML = "<li>No quotes found for this anime.</li>";
-                } else {
-                    data.forEach(quote => {
-                        const li = document.createElement("li");
-                        li.textContent = `"${quote.quote}" - ${quote.anime}`;
-                        quotesList.appendChild(li);
-                    });
-                }
-            } else if (data.quote) { // If it's a single object
-                const li = document.createElement("li");
-                li.textContent = `"${data.quote}" - ${data.anime}`;
-                quotesList.appendChild(li);
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(quote => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `"${quote.quote}" - <strong>${quote.character}</strong> (${quote.anime})`;
+                    quotesList.appendChild(listItem);
+                });
             } else {
-                quotesList.innerHTML = `<li>${data.error || "Unexpected response format"}</li>`;
+                quotesList.innerHTML = "<li>No quotes found for this anime.</li>";
             }
         } catch (error) {
             console.error('Error fetching quotes by anime:', error);
-            document.getElementById("quotes-by-anime").innerHTML = `<li>Error fetching quotes</li>`;
+            document.getElementById("quotes-by-anime").innerHTML = "<li>Error fetching quotes. Please try again later.</li>";
         }
     });
 
