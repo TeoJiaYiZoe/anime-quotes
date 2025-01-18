@@ -315,7 +315,7 @@
             // Get Quotes by Tag
             document.getElementById("tag-form").addEventListener("submit", async function (event) {
             event.preventDefault();
-            const tag = document.getElementById("tags").value;
+            const tag = document.getElementById("tag").value;
             try {
                 const response = await fetch(`${baseUrl}/quotes-by-tag?tag=${tag}`);
                 console.log(response)
@@ -346,7 +346,7 @@
         try {
             const url = new URL(`${baseUrl}/search-quotes`);
             if (anime) url.searchParams.append("anime", anime);
-            if (tag) url.searchParams.append("tags", tag);
+            if (tag) url.searchParams.append("tag", tag);
 
             const response = await fetch(url);
             const data = await response.json();
