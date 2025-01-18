@@ -47,4 +47,10 @@ quotes = [
         "anime": "Castle In The Sky",
         "tags": ["Castle In The Sky", "Sheeta"]
     },
+    {
+        "id": 9,
+        "quote": "The earth speaks to all of us, and if we listen, we can understand.",
+        "anime": "Castle In The Sky",
+        "tags": ["Castle In The Sky", "Uncle Pom"]
+    },
 ]
